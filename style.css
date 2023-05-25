@@ -1,0 +1,486 @@
+body {
+  background-color: #979dac;
+  font-family: "Poppins", sans-serif;
+}
+
+* {
+  font-family: "Poppins", sans-serif;
+  list-style: none;
+  text-decoration: none;
+}
+
+.budget-container {
+  position: absolute;
+  width: 360px;
+  height: 780px;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background-color: #001233;
+}
+
+.budget-container .app-title {
+  margin-top: 45px;
+  display: flex;
+  justify-content: center;
+}
+
+.budget-container .app-title a {
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+.budget-container .app-title a {
+  font-family: "Poppins", sans-serif;
+}
+.balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.budget-header .balance {
+  margin-top: 45px;
+}
+
+.budget-header .balance .title {
+  color: #fff;
+  font-size: 1em;
+  font-family: "Poppins", sans-serif;
+}
+
+.budget-header .balance .value {
+  color: #fff;
+  font-size: 2em;
+  margin-top: 10px;
+  font-family: "Poppins", sans-serif;
+}
+
+.budget-header .account {
+  display: block;
+  width: 310px;
+  margin: 35px auto 0;
+  line-height: 1.7em;
+  text-align: center;
+}
+
+.budget-header .account .income,
+.chart,
+.outcome {
+  height: 50px;
+  display: inline-block;
+  width: 100px;
+  vertical-align: middle;
+}
+
+.budget-header .account .income .title {
+  color: #fff;
+  opacity: 0.5;
+}
+.budget-header .account .income .income-total {
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+}
+
+.budget-header .account .outcome .title {
+  color: #fff;
+  opacity: 0.5;
+}
+.budget-header .account .outcome .outcome-total {
+  color: #0466c8;
+  font-family: "Poppins", sans-serif;
+}
+
+/*Panel wydatków i przychodów*/
+.budget-dashboard {
+  display: block;
+  width: 360px;
+  height: 470px;
+  background-color: #fff;
+  margin-top: 35px;
+}
+
+.budget-dashboard .dash-title {
+  display: inline-block;
+  color: #001233;
+  font-size: 1.7em;
+  margin-left: 61px;
+  margin-top: 30px;
+  font-family: "Poppins", sans-serif;
+  font-weight: bold;
+}
+
+.toggle {
+  display: block;
+  margin-top: 30px;
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.toggle .tab1,
+.tab2,
+.tab3 {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1.1em;
+  color: #0466c8;
+  font-family: "Poppins", sans-serif;
+  opacity: 0.4;
+}
+
+.toggle .tab2,
+.tab3 {
+  margin-left: 10px;
+}
+
+.active {
+  opacity: 1 !important;
+}
+
+.hide {
+  display: none;
+}
+
+.budget-dashboard input {
+  /* Input select */
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
+/* ALL */
+.budget-dashboard #all {
+  width: 360px;
+  height: 339px;
+  position: relative;
+}
+.budget-dashboard #all ul {
+  width: 360px;
+  height: 285px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.budget-dashboard #all ul.list li {
+  position: relative;
+  font-size: 1em;
+}
+
+.budget-dashboard #all ul.list li * {
+  display: inline-block;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.budget-dashboard #all ul.list li .entry {
+  width: 250px;
+  height: auto;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  font-family: "Poppins", sans-serif;
+}
+
+.budget-dashboard #all ul.list li #edit {
+  visibility: hidden;
+}
+
+.budget-dashboard #all ul.list li #delete {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 20px;
+  cursor: pointer;
+  background-image: url("icon/trash.png");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+}
+/* WYDATKI */
+.budget-dashboard #expense {
+  width: 360px;
+  height: 339px;
+  position: relative;
+}
+
+.budget-dashboard #expense .input {
+  position: absolute;
+  display: block;
+  width: 360px;
+  bottom: 0;
+  border-top: 1px solid #ccc;
+}
+
+.budget-dashboard #expense .input * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.budget-dashboard #expense .input input#expense-title-input {
+  height: 40px;
+  width: 150px;
+  padding-left: 10px;
+  font-size: 1.2em;
+  font-family: "Poppins", sans-serif;
+  margin: 5px;
+  margin-left: 10px;
+  border-radius: 10px 0 0 10px;
+  border: none;
+}
+
+.budget-dashboard #expense .input input#expense-amount-input {
+  height: 40px;
+  width: 110px;
+  padding-left: 10px;
+  font-size: 1.2em;
+  font-family: "Poppins", sans-serif;
+  margin: 5px;
+  margin-left: -4px;
+  border-radius: 0 10px 10px 0;
+  border: none;
+}
+
+.budget-dashboard #expense .input .add-expense img {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.budget-dashboard #expense ul {
+  width: 360px;
+  height: 285px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.budget-dashboard #expense ul.list li {
+  position: relative;
+  font-size: 1em;
+}
+
+.budget-dashboard #expense ul.list li * {
+  display: inline-block;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.budget-dashboard #expense ul.list li .entry {
+  width: 250px;
+  height: auto;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  font-family: "Poppins", sans-serif;
+  color: #0353a4;
+}
+
+.budget-dashboard #expense ul.list li #edit {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 50px;
+  cursor: pointer;
+  background-image: url("icon/edit.png");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+}
+
+.budget-dashboard #expense ul.list li #delete {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 20px;
+  cursor: pointer;
+  background-image: url("icon/trash.png");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+}
+
+/* PRZYCHODY */
+.budget-dashboard #income {
+  width: 360px;
+  height: 339px;
+  position: relative;
+}
+
+.budget-dashboard #income .input {
+  position: absolute;
+  display: block;
+  width: 360px;
+  bottom: 0;
+  border-top: 1px solid #ccc;
+}
+
+.budget-dashboard #income .input * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.budget-dashboard #income .input input#income-title-input {
+  height: 40px;
+  width: 150px;
+  padding-left: 10px;
+  font-size: 1.2em;
+  font-family: "Poppins", sans-serif;
+  margin: 5px;
+  margin-left: 10px;
+  border-radius: 10px 0 0 10px;
+  border: none;
+}
+
+.budget-dashboard #income .input input#income-amount-input {
+  height: 40px;
+  width: 110px;
+  padding-left: 10px;
+  font-size: 1.2em;
+  font-family: "Poppins", sans-serif;
+  margin: 5px;
+  margin-left: -4px;
+  border-radius: 0 10px 10px 0;
+  border: none;
+}
+
+.budget-dashboard #income .input .add-income img {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.budget-dashboard #income ul {
+  width: 360px;
+  height: 285px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+.budget-dashboard #income ul.list li {
+  position: relative;
+  font-size: 1em;
+}
+
+.budget-dashboard #income ul.list li * {
+  display: inline-block;
+  height: 30px;
+  vertical-align: middle;
+}
+
+.budget-dashboard #income ul.list li .entry {
+  width: 250px;
+  height: auto;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  word-wrap: break-word;
+  font-family: "Poppins", sans-serif;
+}
+
+.budget-dashboard #income ul.list li #edit {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 50px;
+  cursor: pointer;
+  background-image: url("icon/edit.png");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+}
+
+.budget-dashboard #income ul.list li #delete {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 20px;
+  cursor: pointer;
+  background-image: url("icon/trash.png");
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+}
+
+@media only screen and (max-width: 600px) {
+  .budget-container {
+    width: 110%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transform: none;
+    position: static;
+  }
+  .budget-container .app-title {
+    margin-top: 0;
+    font-size: 2em;
+  }
+  .app-title a {
+    margin-top: 40px;
+  }
+  .budget-dashboard {
+    width: 100%;
+    height: 100%;
+  }
+  .budget-dashboard .dash-title {
+    display: inline-block;
+    color: #001233;
+    font-size: 2em;
+    margin-left: 67px;
+    margin-top: 30px;
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
+  }
+  .toggle {
+    margin-top: 30px;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .budget-dashboard #all ul,
+  .budget-dashboard #expense ul,
+  .budget-dashboard #income ul {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    overflow-x: scroll;
+    white-space: nowrap;
+  }
+
+  .budget-dashboard #all ul.list li,
+  .budget-dashboard #expense ul.list li,
+  .budget-dashboard #income ul.list li {
+    font-size: 0.9em;
+  }
+
+  .budget-dashboard #all ul.list li .entry,
+  .budget-dashboard #expense ul.list li .entry,
+  .budget-dashboard #income ul.list li .entry {
+    width: 200px;
+  }
+  .budget-dashboard #income .input {
+    width: 415px;
+  }
+  .budget-dashboard #income {
+    height: 480px;
+  }
+  .budget-dashboard #expense .input {
+    width: 415px;
+  }
+  .budget-dashboard #expense {
+    height: 480px;
+  }
+  .budget-dashboard #all {
+    height: 480px;
+  }
+  .budget-dashboard #income .input * {
+    margin-left: 25px;
+    padding-top: 2px;
+  }
+  .budget-dashboard #expense .input * {
+    margin-left: 25px;
+    padding-top: 2px;
+  }
+}
