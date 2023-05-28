@@ -20,26 +20,26 @@ const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
 
-let ENTRY_LIST;
-let balance = 0,
-  income = 0,
-  outcome = 0;
-const DELETE = "delete",
-  EDIT = "edit";
-ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
+const DELETE = "delete";
+const EDIT = "edit";
+const ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
+
 updateUI();
+
 expenseBtn.addEventListener("click", function () {
   show(expenseEl);
   hide([incomeEl, allEl]);
   active(expenseBtn);
   inactive([incomeBtn, allBtn]);
 });
+
 incomeBtn.addEventListener("click", function () {
   show(incomeEl);
   hide([expenseEl, allEl]);
   active(incomeBtn);
   inactive([expenseBtn, allBtn]);
 });
+
 allBtn.addEventListener("click", function () {
   show(allEl);
   hide([incomeEl, expenseEl]);
@@ -48,7 +48,14 @@ allBtn.addEventListener("click", function () {
 });
 
 addExpense.addEventListener("click", function () {
-  if (!expenseTitle.value || !expenseAmount.value) return;
+  if (
+    !expenseTitle.value ||
+    expenseAmount.value === "0" ||
+    expenseAmount.value.startsWith("0")
+  ) {
+    alert("Wpisz poprawną kwotę.");
+    return;
+  }
 
   let expense = {
     type: "expense",
@@ -62,7 +69,14 @@ addExpense.addEventListener("click", function () {
 });
 
 addIncome.addEventListener("click", function () {
-  if (!incomeTitle.value || !incomeAmount.value) return;
+  if (
+    !incomeTitle.value ||
+    incomeAmount.value === "0" ||
+    incomeAmount.value.startsWith("0")
+  ) {
+    alert("Wpisz poprawną kwotę.");
+    return;
+  }
 
   let income = {
     type: "income",
@@ -81,92 +95,160 @@ allList.addEventListener("click", deleteOrEdit);
 
 function deleteOrEdit(event) {
   const targetBtn = event.target;
-
   const entry = targetBtn.parentNode;
 
-  if (targetBtn.id == DELETE) {
-    deleteEntry(entry);
-  } else if (targetBtn.id == EDIT) {
-    editEntry(entry);
+  if (targetBtn.id === DELETE) {
+    showDeleteConfirmation(entry);
+  } else if (targetBtn.id === EDIT) {
+    if (!entry.classList.contains("editing")) {
+      openEditForm(entry);
+    }
+  }
+}
+function showDeleteConfirmation(entry) {
+  const confirmDelete = confirm("Czy na pewno chcesz usunąć ten wpis?");
+  if (confirmDelete) {
+    const entryIndex = parseInt(entry.id);
+    deleteEntry(entryIndex);
   }
 }
 
-function deleteEntry(entry) {
-  ENTRY_LIST.splice(entry.id, 1);
-
+function deleteEntry(entryIndex) {
+  ENTRY_LIST.splice(entryIndex, 1);
   updateUI();
 }
+function openEditForm(entry) {
+  const entryIndex = parseInt(entry.id);
+  const ENTRY = ENTRY_LIST[entryIndex];
 
-function editEntry(entry) {
-  console.log(entry);
-  let ENTRY = ENTRY_LIST[entry.id];
-
-  if (ENTRY.type == "income") {
+  if (ENTRY.type === "income") {
     incomeAmount.value = ENTRY.amount;
     incomeTitle.value = ENTRY.title;
-  } else if (ENTRY.type == "expense") {
+  } else if (ENTRY.type === "expense") {
     expenseAmount.value = ENTRY.amount;
     expenseTitle.value = ENTRY.title;
   }
 
-  deleteEntry(entry);
-}
+  showEditForm(entryIndex);
+  entry.classList.add("editing");
+  disableInputFields([expenseTitle, expenseAmount, incomeTitle, incomeAmount]);
 
-function updateUI() {
-  income = calculateTotal("income", ENTRY_LIST);
-  outcome = calculateTotal("expense", ENTRY_LIST);
-  balance = Math.abs(calculateBalance(income, outcome));
+  const editForm = document.querySelector(".edit-form");
+  editForm.style.display = "flex";
+  editForm.style.flexDirection = "column";
+  editForm.style.alignItems = "center";
+  editForm.style.padding = "18px";
+  editForm.style.borderRadius = "5px";
+  editForm.innerHTML = "";
 
-  let sign = income >= outcome ? "" : "-";
+  const titleInput = document.createElement("input");
+  titleInput.type = "text";
+  titleInput.value = ENTRY_LIST[entryIndex].title;
+  titleInput.style.marginBottom = "10px";
 
-  balanceEl.innerHTML = `${sign}${balance}<small>zł</small>`;
-  outcomeTotalEl.innerHTML = `${sign}${balance}<small>zł</small>`;
-  incomeTotalEl.innerHTML = `${sign}${balance}<small>zł</small>`;
+  const amountInput = document.createElement("input");
+  amountInput.type = "number";
+  amountInput.value = ENTRY_LIST[entryIndex].amount;
+  amountInput.style.marginBottom = "10px";
 
-  clearElement([expenseList, incomeList, allList]);
+  const buttonContainer = document.createElement("div");
+  buttonContainer.style.display = "flex";
+  buttonContainer.style.gap = "10px";
 
-  ENTRY_LIST.forEach((entry, index) => {
-    if (entry.type == "expense") {
-      showEntry(expenseList, entry.type, entry.title, entry.amount, index);
-    } else if (entry.type == "income") {
-      showEntry(incomeList, entry.type, entry.title, entry.amount, index);
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "Zapisz";
+  saveBtn.style.backgroundColor = "#0466c8";
+  saveBtn.style.color = "white";
+  saveBtn.style.border = "none";
+  saveBtn.style.padding = "10px 20px";
+  saveBtn.style.cursor = "pointer";
+  saveBtn.style.borderRadius = "5px";
+  saveBtn.style.display = "flex";
+  saveBtn.style.alignItems = "center";
+  saveBtn.style.justifyContent = "center";
+  const cancelBtn = document.createElement("button");
+  cancelBtn.textContent = "Anuluj";
+  cancelBtn.style.backgroundColor = "#f44336";
+  cancelBtn.style.color = "white";
+  cancelBtn.style.border = "none";
+  cancelBtn.style.padding = "10px 20px";
+  cancelBtn.style.cursor = "pointer";
+  cancelBtn.style.borderRadius = "5px";
+  cancelBtn.style.display = "flex";
+  cancelBtn.style.alignItems = "center";
+  cancelBtn.style.justifyContent = "center";
+
+  saveBtn.addEventListener("click", function () {
+    const newTitle = titleInput.value;
+    const newAmount = parseInt(amountInput.value);
+
+    if (!newTitle || newAmount === 0 || newAmount.toString().startsWith("0")) {
+      alert("Wpisz poprawną kwotę.");
+      return;
     }
-    showEntry(allList, entry.type, entry.title, entry.amount, index);
+
+    ENTRY_LIST[entryIndex].title = newTitle;
+    ENTRY_LIST[entryIndex].amount = newAmount;
+
+    updateUI();
+    hideEditForm();
   });
 
-  updateChart(income, outcome);
+  cancelBtn.addEventListener("click", function () {
+    hideEditForm();
+  });
 
-  localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
+  buttonContainer.appendChild(saveBtn);
+  buttonContainer.appendChild(cancelBtn);
+
+  editForm.appendChild(titleInput);
+  editForm.appendChild(amountInput);
+  editForm.appendChild(buttonContainer);
 }
 
-function showEntry(list, type, title, amount, id) {
-  const isOutcomeTab = expenseBtn.classList.contains("active");
-  const isIncomeTab = incomeBtn.classList.contains("active");
-  const sign =
-    (isOutcomeTab && type === "expense") || (isIncomeTab && type === "expense")
-      ? "-"
-      : "";
+function hideEditForm() {
+  const editForms = document.getElementsByClassName("edit-form");
+  const entries = document.getElementsByClassName("entry");
 
-  const entry = `<li id="${id}" class="${type}">
-                    <div class="entry">${title}: ${sign}${amount}zł</div>
-                    <div id="edit"></div>
-                    <div id="delete"></div>
-                </li>`;
+  while (editForms.length > 0) {
+    editForms[0].parentNode.removeChild(editForms[0]);
+  }
 
-  const position = "afterbegin";
+  for (let i = 0; i < entries.length; i++) {
+    entries[i].classList.remove("editing");
+  }
+  enableInputFields([expenseTitle, expenseAmount, incomeTitle, incomeAmount]);
+}
+function disableInputFields(inputs) {
+  inputs.forEach((input) => {
+    input.disabled = true;
+  });
+}
 
-  list.insertAdjacentHTML(position, entry);
+function enableInputFields(inputs) {
+  inputs.forEach((input) => {
+    input.disabled = false;
+  });
+}
+
+function showEditForm(entryIndex) {
+  const ENTRY = ENTRY_LIST[entryIndex];
+
+  const editForm = document.createElement("div");
+  editForm.classList.add("edit-form");
+
+  const entry = document.getElementById(entryIndex);
+  entry.appendChild(editForm);
 }
 
 function updateUI() {
-  income = calculateTotal("income", ENTRY_LIST);
-  outcome = calculateTotal("expense", ENTRY_LIST);
-  balance = calculateBalance(income, outcome);
+  const income = calculateTotal("income", ENTRY_LIST);
+  const outcome = calculateTotal("expense", ENTRY_LIST);
+  const balance = calculateBalance(income, outcome);
+  const balanceMessage = getBalanceMessage(balance);
 
-  let sign = balance >= 0 ? "" : "-";
-
-  balanceEl.innerHTML = `${sign}${Math.abs(balance)}<small>zł</small>`;
-  outcomeTotalEl.innerHTML = `${sign}${Math.abs(outcome)}<small>zł</small>`;
+  balanceEl.innerHTML = balanceMessage;
+  outcomeTotalEl.innerHTML = `${Math.abs(outcome)}<small>zł</small>`;
   incomeTotalEl.innerHTML = `${Math.max(income, 0)}<small>zł</small>`;
 
   clearElement([expenseList, incomeList, allList]);
@@ -185,6 +267,18 @@ function updateUI() {
   localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
 }
 
+function getBalanceMessage(balance) {
+  if (balance > 0) {
+    return `Możesz jeszcze wydać ${balance} złotych.`;
+  } else if (balance === 0) {
+    return "Bilans wynosi zero.";
+  } else {
+    return `Bilans jest ujemny. Jesteś na minusie ${Math.abs(
+      balance
+    )} złotych.`;
+  }
+}
+
 function showEntry(list, type, title, amount, id) {
   const sign = type === "expense" ? "-" : "";
 
@@ -201,6 +295,14 @@ function showEntry(list, type, title, amount, id) {
   list.insertAdjacentHTML(position, entry);
 }
 
+function clearElement(elements) {
+  elements.forEach((element) => {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  });
+}
+
 function calculateBalance(income, outcome) {
   return income - outcome;
 }
@@ -215,7 +317,7 @@ function calculateTotal(type, list) {
   let sum = 0;
 
   list.forEach((entry) => {
-    if (entry.type == type) {
+    if (entry.type === type) {
       sum += entry.amount;
     }
   });
@@ -223,15 +325,12 @@ function calculateTotal(type, list) {
   return sum;
 }
 
-function calculateBalance(income, outcome) {
-  return income - outcome;
-}
-
 function clearInput(inputs) {
   inputs.forEach((input) => {
     input.value = "";
   });
 }
+
 function show(element) {
   element.classList.remove("hide");
 }
