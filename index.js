@@ -240,6 +240,9 @@ function showEditForm(entryIndex) {
   const entry = document.getElementById(entryIndex);
   entry.appendChild(editForm);
 }
+window.addEventListener("load", function () {
+  expenseBtn.click();
+});
 
 function updateUI() {
   const income = calculateTotal("income", ENTRY_LIST);
