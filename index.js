@@ -51,7 +51,8 @@ addExpense.addEventListener("click", function () {
   if (
     !expenseTitle.value ||
     expenseAmount.value === "0" ||
-    expenseAmount.value.startsWith("0")
+    expenseAmount.value.startsWith("0") ||
+    parseInt(expenseAmount.value) < 0
   ) {
     alert("Wpisz poprawną kwotę.");
     return;
@@ -72,7 +73,8 @@ addIncome.addEventListener("click", function () {
   if (
     !incomeTitle.value ||
     incomeAmount.value === "0" ||
-    incomeAmount.value.startsWith("0")
+    incomeAmount.value.startsWith("0") ||
+    parseInt(incomeAmount.value) < 0
   ) {
     alert("Wpisz poprawną kwotę.");
     return;
