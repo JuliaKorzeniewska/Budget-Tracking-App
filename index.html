@@ -24,34 +24,36 @@
           <div class="value"></div>
         </div>
         <div class="account">
-          <div class="income">
-            <div class="title">Przychody</div>
-            <div class="income-total"><small>zł</small>0</div>
-          </div>
-          <div class="chart"></div>
           <div class="outcome">
             <div class="title">Wydatki</div>
             <div class="outcome-total"><small>zł</small>0</div>
+          </div>
+          <div class="chart"></div>
+          <div class="income">
+            <div class="title">Przychody</div>
+            <div class="income-total"><small>zł</small>0</div>
           </div>
         </div>
       </div>
       <div class="budget-dashboard">
         <div class="dash-title">Panel użytkownika</div>
         <div class="toggle">
-          <div class="tab1">Wydatki</div>
-          <div class="tab2">Przychody</div>
-          <div class="tab3 active">Podsumowanie</div>
+          <div class="tab tab1">Wydatki</div>
+          <div class="tab tab2">Przychody</div>
+          <div class="tab tab3 active">Podsumowanie</div>
         </div>
-        <div class="hide" id="income">
+        <div class="hide incomes" id="income">
           <ul class="list"></ul>
-          <div class="input">
+          <div class="input inc">
             <input
+              class="income-title-input"
               type="text"
               id="income-title-input"
               name="title"
               placeholder="Tytuł"
             />
             <input
+              class="income-amount-input"
               type="number"
               id="income-amount-input"
               name="amount"
@@ -60,16 +62,18 @@
             <div class="add-income"><img src="icon/plus.png" alt="" /></div>
           </div>
         </div>
-        <div class="hide" id="expense">
+        <div class="hide expense" id="expense">
           <ul class="list"></ul>
-          <div class="input">
+          <div class="input exp">
             <input
+              class="expense-title-input"
               type="text"
               id="expense-title-input"
               name="title"
               placeholder="Tytuł"
             />
             <input
+              class="expense-amount-input"
               type="number"
               id="expense-amount-input"
               name="amount"
@@ -78,7 +82,7 @@
             <div class="add-expense"><img src="icon/plus.png" /></div>
           </div>
         </div>
-        <div id="all">
+        <div class="all" id="all">
           <ul class="list"></ul>
         </div>
       </div>

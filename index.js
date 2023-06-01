@@ -13,12 +13,12 @@ const incomeBtn = document.querySelector(".tab2");
 const allBtn = document.querySelector(".tab3");
 
 const addExpense = document.querySelector(".add-expense");
-const expenseTitle = document.getElementById("expense-title-input");
-const expenseAmount = document.getElementById("expense-amount-input");
+const expenseTitle = document.querySelector("#expense-title-input");
+const expenseAmount = document.querySelector("#expense-amount-input");
 
 const addIncome = document.querySelector(".add-income");
-const incomeTitle = document.getElementById("income-title-input");
-const incomeAmount = document.getElementById("income-amount-input");
+const incomeTitle = document.querySelector("#income-title-input");
+const incomeAmount = document.querySelector("#income-amount-input");
 
 const DELETE = "delete";
 const EDIT = "edit";
@@ -48,20 +48,25 @@ allBtn.addEventListener("click", function () {
 });
 
 addExpense.addEventListener("click", function () {
-  if (
-    !expenseTitle.value ||
-    expenseAmount.value === "0" ||
-    expenseAmount.value.startsWith("0") ||
-    parseInt(expenseAmount.value) < 0
-  ) {
-    alert("Wpisz poprawną kwotę.");
+  if (!expenseTitle.value && !expenseAmount.value) {
+    alert("Wprowadź tytuł i kwotę.");
+    return;
+  }
+
+  if (!expenseTitle.value) {
+    alert("Wprowadź poprawny tytuł.");
+    return;
+  }
+
+  if (!expenseAmount.value || parseFloat(expenseAmount.value) <= 0) {
+    alert("Wprowadź poprawną kwotę.");
     return;
   }
 
   let expense = {
     type: "expense",
     title: expenseTitle.value,
-    amount: parseInt(expenseAmount.value),
+    amount: parseFloat(expenseAmount.value),
   };
   ENTRY_LIST.push(expense);
 
@@ -70,25 +75,42 @@ addExpense.addEventListener("click", function () {
 });
 
 addIncome.addEventListener("click", function () {
-  if (
-    !incomeTitle.value ||
-    incomeAmount.value === "0" ||
-    incomeAmount.value.startsWith("0") ||
-    parseInt(incomeAmount.value) < 0
-  ) {
-    alert("Wpisz poprawną kwotę.");
+  if (!incomeTitle.value && !incomeAmount.value) {
+    alert("Wprowadź tytuł i kwotę.");
+    return;
+  }
+
+  if (!incomeTitle.value) {
+    alert("Wprowadź poprawny tytuł.");
+    return;
+  }
+
+  if (!incomeAmount.value || parseFloat(incomeAmount.value) <= 0) {
+    alert("Wprowadź poprawną kwotę.");
     return;
   }
 
   let income = {
     type: "income",
     title: incomeTitle.value,
-    amount: parseInt(incomeAmount.value),
+    amount: parseFloat(incomeAmount.value),
   };
   ENTRY_LIST.push(income);
 
   updateUI();
   clearInput([incomeTitle, incomeAmount]);
+});
+
+incomeAmount.addEventListener("input", function () {
+  if (incomeAmount.value < 0) {
+    incomeAmount.value = Math.abs(incomeAmount.value);
+  }
+});
+
+expenseAmount.addEventListener("input", function () {
+  if (expenseAmount.value < 0) {
+    expenseAmount.value = Math.abs(expenseAmount.value);
+  }
 });
 
 incomeList.addEventListener("click", deleteOrEdit);
@@ -159,38 +181,31 @@ function openEditForm(entry) {
 
   const saveBtn = document.createElement("button");
   saveBtn.textContent = "Zapisz";
-  saveBtn.style.backgroundColor = "#0466c8";
-  saveBtn.style.color = "white";
-  saveBtn.style.border = "none";
-  saveBtn.style.padding = "10px 20px";
-  saveBtn.style.cursor = "pointer";
-  saveBtn.style.borderRadius = "5px";
-  saveBtn.style.display = "flex";
-  saveBtn.style.alignItems = "center";
-  saveBtn.style.justifyContent = "center";
+  saveBtn.classList.add("button");
   const cancelBtn = document.createElement("button");
   cancelBtn.textContent = "Anuluj";
-  cancelBtn.style.backgroundColor = "#f44336";
-  cancelBtn.style.color = "white";
-  cancelBtn.style.border = "none";
-  cancelBtn.style.padding = "10px 20px";
-  cancelBtn.style.cursor = "pointer";
-  cancelBtn.style.borderRadius = "5px";
-  cancelBtn.style.display = "flex";
-  cancelBtn.style.alignItems = "center";
-  cancelBtn.style.justifyContent = "center";
+  cancelBtn.classList.add("button", "button-cancel");
 
   saveBtn.addEventListener("click", function () {
     const newTitle = titleInput.value;
-    const newAmount = parseInt(amountInput.value);
+    const newAmount = parseFloat(amountInput.value);
 
-    if (!newTitle || newAmount === 0 || newAmount.toString().startsWith("0")) {
+    if (!newTitle) {
+      alert("Wpisz poprawny tytuł.");
+      return;
+    }
+
+    if (!newAmount || newAmount <= 0) {
       alert("Wpisz poprawną kwotę.");
       return;
     }
 
+    const entryType = ENTRY_LIST[entryIndex].type;
+    const validatedAmount =
+      entryType === "income" ? Math.abs(newAmount) : -Math.abs(newAmount);
+
     ENTRY_LIST[entryIndex].title = newTitle;
-    ENTRY_LIST[entryIndex].amount = newAmount;
+    ENTRY_LIST[entryIndex].amount = validatedAmount;
 
     updateUI();
     hideEditForm();
@@ -249,7 +264,8 @@ window.addEventListener("load", function () {
 function updateUI() {
   const income = calculateTotal("income", ENTRY_LIST);
   const outcome = calculateTotal("expense", ENTRY_LIST);
-  const balance = calculateBalance(income, outcome);
+  const balance = calculateBalance(income, Math.abs(outcome));
+
   const balanceMessage = getBalanceMessage(balance);
 
   balanceEl.innerHTML = balanceMessage;
@@ -291,12 +307,11 @@ function showEntry(list, type, title, amount, id) {
                     <div class="entry">${title}: ${sign}${Math.abs(
     amount
   )}zł</div>
-                    <div id="edit"></div>
-                    <div id="delete"></div>
+                    <div class="edit" id="edit"></div>
+                    <div class="delete" id="delete"></div>
                 </li>`;
 
-  const position = "afterbegin";
-
+  const position = "beforeend";
   list.insertAdjacentHTML(position, entry);
 }
 
@@ -309,7 +324,7 @@ function clearElement(elements) {
 }
 
 function calculateBalance(income, outcome) {
-  return income - outcome;
+  return Math.round((income - outcome) * 100) / 100;
 }
 
 function clearElement(elements) {
