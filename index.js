@@ -100,7 +100,6 @@ addIncome.addEventListener("click", function () {
   updateUI();
   clearInput([incomeTitle, incomeAmount]);
 });
-
 incomeAmount.addEventListener("input", function () {
   if (incomeAmount.value < 0) {
     incomeAmount.value = Math.abs(incomeAmount.value);
